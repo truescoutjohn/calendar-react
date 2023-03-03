@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import ModalChange from '../modal-change/ModalChange.jsx';
-import './event.scss';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import ModalDelete from "../modal-delete/ModalDelete.jsx";
+import "./event.scss";
 
 const Event = ({ id, height, marginTop, title, time, onEventDelete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,15 +11,15 @@ const Event = ({ id, height, marginTop, title, time, onEventDelete }) => {
     marginTop,
   };
 
-  const toggleModal = event => {
-    setIsModalOpen(prevState => !prevState);
+  const toggleModal = (event) => {
+    setIsModalOpen((prevState) => !prevState);
   };
 
   return (
     <div style={eventStyle} className="event" onClick={toggleModal}>
       <div className="event__title">{title}</div>
       <div className="event__time">{time}</div>
-      {isModalOpen && <ModalChange onEventDelete={onEventDelete} id={id} />}
+      {isModalOpen && <ModalDelete onEventDelete={onEventDelete} id={id} />}
     </div>
   );
 };

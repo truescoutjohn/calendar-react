@@ -35,21 +35,16 @@ const App = () => {
     setIsModalOpen(true);
   };
 
-  const changeWeek = (isDirectionForward) => {
-    const oneDay = Date.parse(weekStartDate);
-    const days = Math.floor(MILLISECONDS_IN_WEEK);
-    const next = isDirectionForward
-      ? oneDay + days * DAYS_IN_WEEK
-      : oneDay - days * DAYS_IN_WEEK;
-    setWeekStartDate(new Date(next));
-  };
-
   const getNextWeek = () => {
-    changeWeek(true);
+    setWeekStartDate(
+      new Date(weekStartDate + MILLISECONDS_IN_WEEK * DAYS_IN_WEEK)
+    );
   };
 
   const getPrevWeek = () => {
-    changeWeek(false);
+    setWeekStartDate(
+      new Date(weekStartDate - MILLISECONDS_IN_WEEK * DAYS_IN_WEEK)
+    );
   };
 
   return (

@@ -19,7 +19,7 @@ const isValidTimeInputs = (inputTime1, inputTime2) =>
     inputTime1.split(TIME_SEPARATOR)[0] - inputTime2.split(TIME_SEPARATOR)[0]
   ) <= MAX_DIFFERENCE_HOURS_EVENTS;
 
-export const isDeletable = (event, dataCurrentDate = new Date()) => {
+export const canDelete = (event, dataCurrentDate = new Date()) => {
   const isPossibleDelete =
     (event.dateFrom >=
       new Date(
@@ -32,22 +32,20 @@ export const isDeletable = (event, dataCurrentDate = new Date()) => {
       ) <= event.dateTo) ||
     event.dateTo < dataCurrentDate;
   if (!isPossibleDelete) {
-    return [false, "Can't delete event before 15 minutes to start"];
+    throw "Can't delete event before 15 minutes to start";
   }
-  return [true, ""];
 };
 
 export default (startTime, endTime) => {
   if (!isDivideQuarterTimeInputs([startTime, endTime])) {
-    return [false, "Events should be divide by quarter"];
+    throw "Events should be divide by quarter";
   }
 
   if (isNotSingleDayTimeInput(startTime, endTime)) {
-    return [false, "Event should create in a  single day"];
+    throw "Event should create in a  single day";
   }
 
   if (!isValidTimeInputs(startTime, endTime)) {
-    return [false, "Events should have difference not more 6 hours"];
+    throw "Events should have difference not more 6 hours";
   }
-  return [true, ""];
 };

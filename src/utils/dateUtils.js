@@ -57,3 +57,41 @@ export const getApproppriateMonths = (weekStartDate) => {
     )
     .join(" - ");
 };
+
+const convertFormFieldsToServerFormat = (
+  selectedDate,
+  transformedEventData
+) => ({
+  title: transformedEventData.title,
+  description: transformedEventData.description,
+  dateFrom: new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate(),
+    transformedEventData.startTime[0],
+    transformedEventData.startTime[1]
+  ),
+  dateTo: new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    selectedDate.getDate(),
+    transformedEventData.endTime[0],
+    transformedEventData.endTime[1]
+  ),
+});
+
+export const normalizeFormFields = (eventData) => {
+  let transformedEventData = { ...eventData };
+  let { startTime, endTime } = transformedEventData;
+  if (startTime.split(":")[0] > endTime.split(":")[0]) {
+    [endTime, startTime] = [startTime, endTime];
+  }
+  transformedEventData = {
+    ...transformedEventData,
+    startTime: startTime.split(":"),
+    endTime: endTime.split(":"),
+  };
+  const selectedDate = new Date(transformedEventData.date);
+
+  return convertFormFieldsToServerFormat(selectedDate, transformedEventData);
+};

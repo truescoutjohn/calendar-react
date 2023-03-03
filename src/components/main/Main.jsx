@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Week from "../week/Week.jsx";
 import Sidebar from "../sidebar/Sidebar.jsx";
-import AddEventForm from "../addEvent/AddEventModal.jsx";
+import AddEventForm from "../add-event/AddEventModal.jsx";
 import { deleteEvent, getEvents } from "../../gateway/events.js";
-import { isDeletable } from "../../utils/validateForm.js";
+import { canDelete } from "../../utils/validateForm.js";
 import "./main.scss";
 import PopupErrors from "../popup-errors/PopupErrors.jsx";
 
@@ -24,11 +24,11 @@ const Main = ({
 
   const deleteEventFromServer = (id) => {
     const event = events.find((e) => e.id === id);
-    const [isDeleted, newErrorMessage] = isDeletable(event);
-
-    if (!isDeleted) {
+    try {
+      canDelete(event);
+    } catch (exception) {
       setIsError(true);
-      setErrorMessage(newErrorMessage);
+      setErrorMessage(exception);
       return null;
     }
 
@@ -68,7 +68,7 @@ const Main = ({
           setIsError={setIsError}
         />
       )}
-      {isError && width <= 100 && (
+      {isError && (
         <PopupErrors
           errorText={errorMessage}
           width={width}

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Modal from "../modal/Modal.jsx";
-import normalizeFormData from "../../utils/transformDate.js";
+import normalizeFormData from "../../utils/normalizeForm.js";
 import { addEvent, getEvents } from "../../gateway/events.js";
 
 const AddEventForm = ({
@@ -15,15 +15,17 @@ const AddEventForm = ({
 }) => {
   const submitFormHandler = (event) => {
     event.preventDefault();
-    const [transformedEventData, errorText] = normalizeFormData(event, events);
-    if (!transformedEventData) {
-      setErrorMessage(errorText);
+    let normalizedEventData;
+    try {
+      normalizedEventData = normalizeFormData(event, events);
+    } catch (exception) {
+      setErrorMessage(exception);
       setIsError(true);
       hideModal();
-      return null;
+      return undefined;
     }
 
-    addEvent(transformedEventData).then((statusResponse) => {
+    addEvent(normalizedEventData).then((statusResponse) => {
       if (statusResponse) {
         getEvents().then((allEvents) => setEvents(allEvents));
       } else {

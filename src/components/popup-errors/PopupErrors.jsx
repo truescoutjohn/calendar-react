@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import './popup-errors.scss';
+import React, { useEffect } from "react";
+import "./popup-errors.scss";
 
-const MAX_WIDTH_HTML_ELEMENT = 100;
+const MAX_WIDTH_ERROR_ELEMENT = 100;
 const PopupErrors = ({ errorText, width, setWidth, setIsError }) => {
-  let interval;
-
+  let timeout;
   useEffect(() => {
-    interval = setInterval(() => {
-      setWidth(prevState => {
-        if (prevState < MAX_WIDTH_HTML_ELEMENT) {
+    timeout = setTimeout(() => {
+      setWidth((prevState) => {
+        if (prevState < MAX_WIDTH_ERROR_ELEMENT) {
           return prevState + 1;
         }
         setIsError(false);
@@ -16,8 +15,8 @@ const PopupErrors = ({ errorText, width, setWidth, setIsError }) => {
       });
     }, 20);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearTimeout(timeout);
+  });
 
   return (
     <div className="popup__wrapper">
