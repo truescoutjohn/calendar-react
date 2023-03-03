@@ -1,0 +1,21 @@
+.modal {
+  &__wrapper {
+    position: absolute;
+    top: -50px;
+    right: -60px;
+    padding: 16px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #ccc;
+  }
+
+  &__delete {
+    background: transparent;
+    outline: none;
+    border: none;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+.popup {
+  &__wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    height: 70px;
+    width: 250px;
+    border-radius: 14px;
+    background-color: #e5e5e5;
+  }
+
+  &__text {
+    color: red;
+  }
+
+  &__progress {
+    height: 2px;
+    width: 0;
+    background-color: red;
+  }
+}
