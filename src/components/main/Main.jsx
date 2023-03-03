@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import Week from '../week/Week.jsx';
-import Sidebar from '../sidebar/Sidebar.jsx';
-import AddEventForm from '../addEvent/AddEventModal.jsx';
-import { deleteEvent, getEvents } from '../../gateway/events.js';
-import { isDeletable } from '../../utils/validateForm.js';
-import './main.scss';
-import PopupErrors from '../popup-errors/PopupErrors.jsx';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import Week from "../week/Week.jsx";
+import Sidebar from "../sidebar/Sidebar.jsx";
+import AddEventForm from "../addEvent/AddEventModal.jsx";
+import { deleteEvent, getEvents } from "../../gateway/events.js";
+import { isDeletable } from "../../utils/validateForm.js";
+import "./main.scss";
+import PopupErrors from "../popup-errors/PopupErrors.jsx";
 
 const Main = ({
   events,
-  dataCurrentDate,
   weekDates,
   isModalOpen,
-  clickHandler,
   dataSelectedDate,
+  setDataSelectedDate,
   hideModal,
+  openModal,
   setEvents,
 }) => {
   const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [width, setWidth] = useState(0);
 
-  const deleteEventFromServer = id => {
-    const event = events.find(e => e.id === id);
-    const [isDeleted, newErrorMessage] = isDeletable(event, dataCurrentDate);
+  const deleteEventFromServer = (id) => {
+    const event = events.find((e) => e.id === id);
+    const [isDeleted, newErrorMessage] = isDeletable(event);
 
     if (!isDeleted) {
       setIsError(true);
@@ -32,38 +32,42 @@ const Main = ({
       return null;
     }
 
-    deleteEvent(id).then(statusResponse => {
+    deleteEvent(id).then((statusResponse) => {
       if (statusResponse) {
-        getEvents().then(deletedEvent => setEvents(deletedEvent));
+        getEvents().then((deletedEvent) => setEvents(deletedEvent));
       } else {
-        throw new Error('Something happens with request');
+        throw new Error("Something happens with request");
       }
     });
     return null;
   };
+
   return (
     <>
       <div className="calendar__body">
         <div className="calendar__week-container">
           <Sidebar />
           <Week
-            dataCurrentDate={dataCurrentDate}
             weekDates={weekDates}
             events={events}
             onEventDelete={deleteEventFromServer}
-            clickHandler={clickHandler}
+            setDataSelectedDate={setDataSelectedDate}
+            openModal={openModal}
           />
         </div>
       </div>
-      <AddEventForm
-        events={events}
-        setEvents={setEvents}
-        dataSelectedDate={dataSelectedDate}
-        hideModal={hideModal}
-        isModalOpen={isModalOpen}
-        setErrorMessage={setErrorMessage}
-        setIsError={setIsError}
-      />
+      {isModalOpen && (
+        <AddEventForm
+          events={events}
+          setEvents={setEvents}
+          dataSelectedDate={dataSelectedDate}
+          setDataSelectedDate={setDataSelectedDate}
+          hideModal={hideModal}
+          isModalOpen={isModalOpen}
+          setErrorMessage={setErrorMessage}
+          setIsError={setIsError}
+        />
+      )}
       {isError && width <= 100 && (
         <PopupErrors
           errorText={errorMessage}
@@ -77,10 +81,8 @@ const Main = ({
 };
 
 Main.propTypes = {
-  dataCurrentDate: PropTypes.object.isRequired,
   weekDates: PropTypes.arrayOf(PropTypes.object).isRequired,
   isModalOpen: PropTypes.bool.isRequired,
-  clickHandler: PropTypes.func.isRequired,
   dataSelectedDate: PropTypes.object.isRequired,
   hideModal: PropTypes.func.isRequired,
 };

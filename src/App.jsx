@@ -1,57 +1,55 @@
-// Algo to change week
-// 1. Determine function which is set current Date to today date
-// 2. Determine function which is shifted date to next week
-// 3. Determine function which is shifted date to previous week
-import React, { useEffect, useState } from 'react';
-import Header from './components/header/Header.jsx';
-import Calendar from './components/calendar/Calendar.jsx';
+import React, { useEffect, useState } from "react";
+import Header from "./components/header/Header.jsx";
+import Calendar from "./components/calendar/Calendar.jsx";
 
 import {
   getWeekStartDate,
   generateWeekRange,
   getApproppriateMonths,
-  goToCertainDate,
-} from './utils/dateUtils.js';
+} from "./utils/dateUtils.js";
 
-import './common.scss';
+import "./common.scss";
+const MILLISECONDS_IN_WEEK = 1000 * 60 * 60 * 24;
+const DAYS_IN_WEEK = 7;
 
-const App = props => {
-  const [currentDate, _] = useState(new Date());
+const App = () => {
   const [dataSelectedDate, setDataSelectedDate] = useState(new Date());
-  const [weekStartDate, setWeekStartDate] = useState(getWeekStartDate(new Date()));
-  const [weekDates, setWeekDates] = useState(generateWeekRange(getWeekStartDate(weekStartDate)));
+  const [weekStartDate, setWeekStartDate] = useState(
+    getWeekStartDate(new Date())
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    setWeekDates(generateWeekRange(getWeekStartDate(weekStartDate)));
+    setWeekStartDate(weekStartDate);
   }, [weekStartDate]);
 
   const setCurrentDate = () => {
     setWeekStartDate(getWeekStartDate(new Date()));
   };
 
-  const calculateWeekRange = direction => {
-    const calculatedWeek = goToCertainDate(weekStartDate, direction);
-
-    setWeekStartDate(calculatedWeek);
-    setWeekDates(generateWeekRange(calculatedWeek));
-  };
-
   const hideModal = () => {
     setIsModalOpen(false);
-    setDataSelectedDate(new Date());
   };
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
+  const changeWeek = (isDirectionForward) => {
+    const oneDay = Date.parse(weekStartDate);
+    const days = Math.floor(MILLISECONDS_IN_WEEK);
+    const next = isDirectionForward
+      ? oneDay + days * DAYS_IN_WEEK
+      : oneDay - days * DAYS_IN_WEEK;
+    setWeekStartDate(new Date(next));
+  };
+
   const getNextWeek = () => {
-    calculateWeekRange('forward');
+    changeWeek(true);
   };
 
   const getPrevWeek = () => {
-    calculateWeekRange('backward');
+    changeWeek(false);
   };
 
   return (
@@ -64,13 +62,12 @@ const App = props => {
         onOpenModal={openModal}
       />
       <Calendar
-        weekDates={weekDates}
+        weekDates={generateWeekRange(weekStartDate)}
         isModalOpen={isModalOpen}
         hideModal={hideModal}
         openModal={openModal}
         dataSelectedDate={dataSelectedDate}
         setDataSelectedDate={setDataSelectedDate}
-        dataCurrentDate={currentDate}
         startDateWeek={weekStartDate}
       />
     </>

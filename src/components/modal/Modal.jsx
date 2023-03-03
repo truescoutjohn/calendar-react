@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import { MILLISECONDS_IN_HOUR, MILLISECONDS_IN_MINUTE } from '../../utils/dateUtils.js';
-import { QUARTER_HOUR } from '../../utils/validateForm.js';
-import './modal.scss';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
+import {
+  MILLISECONDS_IN_HOUR,
+  MILLISECONDS_IN_MINUTE,
+} from "../../utils/dateUtils.js";
+import { QUARTER_HOUR } from "../../utils/validateForm.js";
+import "./modal.scss";
 
-// Algo
-// 1. Divide date minutes to 15 and trunc fraction
-// 2. Compare result
-//   2.1. if it integer just multiply on 15
-//   2.2. else add 1 and multiply result on 15
-
-const Modal = ({ submitFormHandler, onCloseModal, dataSelectedDate = new Date() }) => {
+const Modal = ({
+  submitFormHandler,
+  onCloseModal,
+  dataSelectedDate = new Date(),
+}) => {
   const minutes = dataSelectedDate.getMinutes() / QUARTER_HOUR;
-  let remainQuarterInMinutes = Number.isInteger(minutes) ? minutes : Math.trunc(minutes) + 1;
+  let remainQuarterInMinutes = Number.isInteger(minutes)
+    ? minutes
+    : Math.trunc(minutes) + 1;
 
   if (remainQuarterInMinutes === 0 && dataSelectedDate === new Date()) {
     remainQuarterInMinutes += 1;
@@ -22,18 +25,20 @@ const Modal = ({ submitFormHandler, onCloseModal, dataSelectedDate = new Date() 
   const destinyDate = new Date(
     dataSelectedDate -
       dataSelectedDate.getMinutes() * MILLISECONDS_IN_MINUTE +
-      remainQuarterInMinutes * QUARTER_HOUR * MILLISECONDS_IN_MINUTE,
+      remainQuarterInMinutes * QUARTER_HOUR * MILLISECONDS_IN_MINUTE
   );
   const [inputValue, setInputValue] = useState({
-    date: moment(destinyDate).format('YYYY-MM-DD'),
-    startTime: moment(destinyDate).format('HH:mm'),
-    endTime: moment(new Date(destinyDate.getTime() + 6 * MILLISECONDS_IN_HOUR)).format('HH:mm'),
-    description: '',
-    title: '',
+    date: moment(destinyDate).format("YYYY-MM-DD"),
+    startTime: moment(destinyDate).format("HH:mm"),
+    endTime: moment(
+      new Date(destinyDate.getTime() + 6 * MILLISECONDS_IN_HOUR)
+    ).format("HH:mm"),
+    description: "",
+    title: "",
   });
 
-  const formChangeHandler = event => {
-    setInputValue(prevState => ({
+  const formChangeHandler = (event) => {
+    setInputValue((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
     }));
@@ -45,7 +50,11 @@ const Modal = ({ submitFormHandler, onCloseModal, dataSelectedDate = new Date() 
           <button className="create-event__close-btn" onClick={onCloseModal}>
             +
           </button>
-          <form method="post" className="event-form" onSubmit={submitFormHandler}>
+          <form
+            method="post"
+            className="event-form"
+            onSubmit={submitFormHandler}
+          >
             <input
               type="text"
               name="title"
